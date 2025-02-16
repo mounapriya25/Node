@@ -58,8 +58,8 @@
   
     
   "build":"npm install",
-  "start": "node server.js",
-  "dev": "nodemon server.js"
+  "start": "node imagecloud/ser.js",
+  "dev": "nodemon imagecloud/ser.js"
   
   },
   
