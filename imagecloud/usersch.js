@@ -24,7 +24,7 @@ const sch= mg.Schema({
     },
     role:{
         type:String,
-        enum:['user','admin'],
+        enum:['user','admin'],//restrict value to user and admin only so it prevents invalid data 
         default:'user'
     }
 })

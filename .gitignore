@@ -1,6 +1,3 @@
-.vscode
-2-books_store
-ejs
+/node_modules
 .env
-node_modules
-node
+
