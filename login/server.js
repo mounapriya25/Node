@@ -14,7 +14,8 @@ const session=require("express-session");
 const github=require("passport-github2").Strategy
 
 mg.connect("mongodb+srv://mouna:Mouna%40mongo25@chatapplication.jhxti.mongodb.net/")
-app.use(exp.static(pth.join(__dirname,"login")))
+//app.use(exp.static(pth.join(__dirname,"login")))
+app.use("/images",exp.static(pth.join(__dirname,"img")))
 
 //session is used to store user details, it initailizes  session storage , , session create a storage space in express and store the id of it in cookies
 app.use(session({
@@ -68,16 +69,6 @@ passport.use(new github({
 passport.serializeUser((user,done)=> done(null,user))//saves user details in session 
 passport.deserializeUser((user,done)=> done(null,user))//retrive user details from session
 
-
-/*passport.deserializeUser(async (email, done) => {
-    try {
-        console.log("Deserializing user:", email); // Debugging
-        const user = await sch.findOne({ email });
-        done(null, user);
-    } catch (err) {
-        done(err, null);
-    }
-});*/
 
 app.get("/auth",(req,res)=>{
     res.send("<a href='/auth/google'> login with google</a>")

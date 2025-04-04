@@ -1,36 +1,45 @@
 const sch=require("./database.js")
 
-const insert= async (user)=>{
-        const us=sch.auth.find(user.email);
+const insert= async (email)=>{
+    try{
+        console.log("insrt :",email)
+        const us= await sch.auth.findOne({email});
         if(!us){
-            return
+            console.log("User not found");
+            return;
         }
-        const id=us._id;
-        const nt=sch.transaction.create({
+        console.log("insrt :",us)
+        const id =us._id;
+        const nt= await sch.transaction.create({
                 userId:id,
             })
-            }
+            
         console.log(nt);
-        const bt=sch.buget.create({
+        const bt= await sch.buget.create({
             userId:id,
+            category:"Food",
+            limit:100
         })
         console.log(bt);
-        const at=sch.account.insertMany([
+        const at=await sch.account.insertMany([
             {
                 userId:id,
                 name:"Card",
+                amount:0,
                 icon:"http://localhost:8000/images/icons8-card-96.png"
         
             },
             {
                 userId:id,
                 name:"Cash",
+                amount:0,
                 icon:"http://localhost:8000/images/icons8-visa-96.png"
         
             },
             {
                 userId:id,
                 name:"Savings",
+                amount:0,
                 icon:"http://localhost:8000/images/icons8-savings-96.png"
         
             }
@@ -39,7 +48,7 @@ const insert= async (user)=>{
 
     //categories
     console.log(at);
-    const ct=sch.category.insertMany([
+    const ct= await sch.category.insertMany([
         {
             userId:id,
             name:"Coupons",
@@ -215,7 +224,13 @@ const insert= async (user)=>{
         
 ])
 console.log(ct);
+    }catch(err)
+    {
+        console.log(err.message)
+    }
+      
 
+}
 
 
 module.exports=insert

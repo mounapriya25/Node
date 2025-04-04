@@ -17,21 +17,28 @@ mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/"
 
 //Mouna%40mongo25
 const app=exp();
-//app.use(cors());
-app.use(exp.json())
-
-app.use(session({
-    secret:"MounaBank25",
-    resave:false,
-    saveUninitialized :true 
-}));
-app.use(passport.initialize())
-app.use(passport.session())
 
 app.use(cors({
     origin: 'http://localhost:3000',  // Allow your frontend's origin
     credentials: true,                // Enable sending cookies with credentials
 }));
+app.use(exp.json())
+
+//icon can acess in react files also
+app.use("/images",exp.static(path.join(__dirname,"img")))
+
+
+app.use(session({
+    secret:"MounaBank25",
+    resave:false,
+    saveUninitialized :true ,
+    cookie: { secure: false, httpOnly: true }
+
+}));
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 
 app.use("/",route);
 
@@ -115,7 +122,10 @@ app.get("/auth/github/callback",passport.authenticate("github",{failureRedirect:
 
     
 })
-
+app.get("/check-session", (req, res) => {
+    console.log("Session Data:", req.session.usrdetails);
+    res.json({ session: req.session.usrdetails || "No session found" });
+});
 app.listen(8000,()=>{
     console.log("connected..");
 })
