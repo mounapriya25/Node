@@ -70,10 +70,10 @@ const transaction_sch= new mg.Schema({
         default:"Expense"
     },
     category:{
-        type:String,
-        required:true,
-        trim:true,
-        default:"Food"
+       type:mg.Schema.Types.ObjectId,
+       ref:"category",
+       required: false,
+       default: null
     },
     amount:{
         type:Number,
@@ -82,19 +82,23 @@ const transaction_sch= new mg.Schema({
         default:0
     },
     account1:{
-        type:String,
-        trim:true,
-        required:true,
-        default:"Cash"
+       type:mg.Schema.Types.ObjectId,
+       ref:"Account"
+       
     },
     account2:{
-        type:String,
-        trim:true,
+       type:mg.Schema.Types.ObjectId,
+       ref:"Account"
     },
     date:{
         type:Date,
         trim:true,
         default:Date.now
+    },
+    time:{
+        type: String,
+        trim: true,
+        required: true
     },
     note:{
         type:String,
