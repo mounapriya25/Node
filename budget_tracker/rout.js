@@ -57,7 +57,7 @@ rt.post("/loginform",async(req,res)=>{
                        expiresIn:"60m"
                 })
                
-                console.log(token)
+                console.log(token,'login auth')
                 res.json({token,message:"success"})
         }catch(err){
              console.log(err.message)   
@@ -83,7 +83,7 @@ rt.post("/setpass",async(req,res)=>{
         })
         await  insert(user.email);
         console.log(us)
-        res.json({mesage:"sucess"})
+        res.json({us,mesage:"sucess"})
 
        }catch(err){
         console.log(err)
@@ -92,31 +92,6 @@ rt.post("/setpass",async(req,res)=>{
 })
 
 rt.post("/home",auth)
-
-/*
-rt.get("/getCat", async(req,res)=>{
-        if(req.session.usrdetails){
-                console.log(req.session.usrdetails)
-        }
-        else{
-                console.log("not found")
-        }
-        const em=req.session?.usrdetails?.email
-        
-        try{
-                const us= await schm.auth.findOne({email:em})
-                if(!us){
-                        console.log("user not found")
-                        return ;
-                }
-                const id=us._id
-                const bg=await schm.category.find({userId:id})
-                console.log(bg)
-                res.json({bg})
-        }catch(err){
-                console.log(err.message)
-        }
-})*/
 
 
 //category 
@@ -151,7 +126,7 @@ rt.post("/getCat", async (req, res) => {
 
 
 
-rt.post("/addcat", async(req,res)=>{
+rt.post("/addCat", async(req,res)=>{
         const {email,name,type,icon}=req.body
        
                 const c= await schm.category.findOne({name})
@@ -168,13 +143,13 @@ rt.post("/addcat", async(req,res)=>{
                 console.log(nc)
                 res.json({nc,message:"sucess"});
 })
-rt.put("/update",async(req,res)=>{
+rt.put("/updateCat",async(req,res)=>{
         const {uid,name,type,icon}=req.body
         const c= await schm.category.findByIdAndUpdate(uid,{$set:{name,type,icon}},{new:true})
         console.log(c)
         res.json({c,message:"sucess"});
 })
-rt.delete("/delete", async(req,res)=>{
+rt.delete("/deleteCat", async(req,res)=>{
         const {id}=req.body
         console.log(id,"hiiii")
         const us=await schm.category.findByIdAndDelete(id);
@@ -251,8 +226,9 @@ rt.post("/getRd",async(req,res)=>{
 
 ///record add button
 rt.post("/getcatAcc",async(req,res)=>{
-        const {em} =req.body
-        const us= await schm.auth.findOne({email:em})
+        const {email} =req.body
+        console.log(email)
+        const us= await schm.auth.findOne({email})
         if(!us){
                 return res.json({message:" email not found"})
         }
@@ -305,6 +281,87 @@ rt.delete("/deleteRd", async(req,res)=>{
         const {id}=req.body
         console.log(id,"hiiii")
         const us=await schm.transaction.findByIdAndDelete(id);
+        
+        console.log(us)
+        res.json({message:"sucess"})
+})
+
+//peichart
+rt.post("/expensesOverveiw",async (req,res)=>{
+        const {email}=req.body;
+        console.log(email,'emmmmm')
+        const us= await schm.auth.findOne({email})
+       if(!us){
+        return res.json({message:" email not found"})
+       }
+       const rdE=await schm.transaction.find({$and:[{userId:us._id},{typename:"Expense"}]}).populate('account1').populate('category').populate('account2');
+       const rdI=await schm.transaction.find({$and:[{userId:us._id},{typename:"Income"}]}).populate('account1').populate('category').populate('account2');
+       console.log(rdE,rdI)
+        res.json({rdE,rdI,message:"sucess"})
+
+})
+//buget
+rt.post("/getTranBg",async (req,res)=>{
+        const {em}=req.body;
+        const us= await schm.auth.findOne({email:em})
+        if(!us){
+         return res.json({message:" email not found"})
+        }
+        const tn=await schm.transaction.find({userId:us._id}).populate('category');
+        console.log(tn)
+         res.json({tn,message:"sucess"})
+ 
+ })
+rt.post("/getBudget",async (req,res)=>{
+        const {em}=req.body;
+        const us= await schm.auth.findOne({email:em})
+        if(!us){
+         return res.json({message:" email not found"})
+        }
+        const bg=await schm.buget.find({userId:us._id}).populate('category');
+        console.log(bg)
+         res.json({bg,message:"sucess"})
+ 
+ })
+ rt.post("/getCatBg",async (req,res)=>{
+        const {em}=req.body;
+        const us= await schm.auth.findOne({email:em})
+        if(!us){
+         return res.json({message:" email not found"})
+        }
+        const cat=await schm.category.find({$and:[{userId:us._id},{type:"Expense"}]});
+        console.log(cat)
+        res.json({cat,message:"success"})
+ 
+ })
+rt.post("/addBudget", async(req,res)=>{
+        const {email,category,limit,spent}=req.body
+       
+                const us= await schm.auth.findOne({email})
+                if(!us){
+                        return res.json({message:"Email not  exist"});
+                }
+                console.log(category)
+                const bg=await schm.buget.create({
+                        userId:us._id,
+                        category,
+                        limit,
+                        spent
+                })
+                console.log(bg)
+                res.json({bg,message:"sucess"});
+})
+
+rt.put("/updateBudget",async(req,res)=>{
+        const {id,category,limit,spent}=req.body
+        const bg=await schm.buget.findByIdAndUpdate(id,{$set:{category,limit,spent}},{new:true})
+        console.log(bg)
+        res.json({bg,message:"sucess"});
+})
+rt.delete("/deleteBudget", async(req,res)=>{
+        const {id}=req.body
+        console.log(id,"hiiii")
+        const us=await schm.buget.findByIdAndDelete(id);
         
         console.log(us)
         res.json({message:"sucess"})

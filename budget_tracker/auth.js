@@ -10,12 +10,13 @@ const auth = (req,res,next)=>{
             console.log("auth",ud);
             if(ud){
                 req.userdt=ud
-                console.log(ud)
-                next()
+                console.log(ud,"autttt")
+                
             }
         
         res.json({ud,message:"successfully login"})
         console.log("hiiiiiiiii");   
+        next()
     }catch(err){
         console.log(err.message)
     }

@@ -26,11 +26,11 @@ const buget_sch= new mg.Schema({
         ref:"Authentication"
     },
     category:{
-        type:String,
+        type:mg.Schema.Types.ObjectId,
+        ref:"category",
         required:true,
-        trim:true,
-        unique:true
-    },
+        default: null
+     },
     limit:{
         type:Number,
         required:true,
@@ -38,11 +38,6 @@ const buget_sch= new mg.Schema({
         default:0
     },
     spent:{
-        type:Number,
-        trim:true,
-        default:0
-    },
-    remaining:{
         type:Number,
         trim:true,
         default:0
