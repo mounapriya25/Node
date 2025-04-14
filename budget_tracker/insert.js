@@ -12,21 +12,19 @@ const insert= async (email)=>{
         const id =us._id;
 
         
-        const nt= await sch.transaction.create({
+        /*const nt= await sch.transaction.create({
                 userId:id,
                 category:"67ed3442ea63310142240556",
                 account1:"67ed3441ea6331014224053c"
             })
             
-        console.log(nt);
+        console.log(nt);*/
 
-
-        const bt= await sch.buget.create({
+       /* const st= await sch.settings.create({
             userId:id,
-            category:"Food",
-            limit:100
         })
-        console.log(bt);
+        console.log("settings :",st)*/
+   
         const at=await sch.account.insertMany([
             {
                 userId:id,
@@ -60,7 +58,7 @@ const insert= async (email)=>{
     ])
 
     //categories
-    console.log(at);
+    console.log(at,"acccc");
     const ct= await sch.category.insertMany([
         {
             userId:id,
@@ -236,7 +234,11 @@ const insert= async (email)=>{
         
         
 ])
-console.log(ct);
+console.log(ct,"ccccccccc");
+const st= await sch.settings.create({
+    userId:id,
+})
+console.log("settings :",st)
     }catch(err)
     {
         console.log(err.message)

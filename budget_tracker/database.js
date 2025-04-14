@@ -15,6 +15,10 @@ const auth_schm= new mg.Schema({
         type:String,
         trim:true,
         required:true,
+    },
+    phoneno:{
+        type:Number,
+        trim:true,
     }
 })
 const auth=mg.model("Authentication",auth_schm);
@@ -93,7 +97,6 @@ const transaction_sch= new mg.Schema({
     time:{
         type: String,
         trim: true,
-        required: true
     },
     note:{
         type:String,
@@ -114,6 +117,7 @@ const account_sch= new mg.Schema({
         required:true,
         trim:true,
         unique:true
+        
     },
     amount:{
         type:Number,
@@ -124,7 +128,7 @@ const account_sch= new mg.Schema({
     icon:{
         type:String,
         trim:true,
-        default:" "
+        default:""
     }
 })
 
@@ -141,6 +145,7 @@ const cat_sch= new mg.Schema({
         required:true,
         trim:true,
         unique:true
+    
     },
    type:{
        type:String,
@@ -153,6 +158,39 @@ const cat_sch= new mg.Schema({
     }
 })
 
+
+
 const category=mg.model("category",cat_sch);
-module.exports={auth,buget,transaction,account,category}
+
+
+
+const settings_sch= new mg.Schema({
+    userId:{
+        type:mg.Schema.Types.ObjectId,
+        ref:"Authentication",
+        unique:true
+
+    },
+    currency:{
+        type:String,
+        trim:true,
+        default:"₹"
+    },
+   notifications:{
+       type:String,
+        default:"on",
+        trim:true,
+    },
+    mode:{
+        type:String,
+        trim:true,
+        default:"daily",
+    }
+
+})
+
+
+
+const settings=mg.model("settings",settings_sch);
+module.exports={auth,buget,transaction,account,category,settings}
 

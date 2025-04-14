@@ -6,6 +6,7 @@ const schm=require("./database.js")
 const jwt=require("jsonwebtoken")
 const auth=require("./auth.js")
 const insert=require("./insert.js")
+const pdf=require('pdfkit')
 
 //sigin
 rt.post("/siginform",async(req,res)=>{
@@ -286,20 +287,6 @@ rt.delete("/deleteRd", async(req,res)=>{
         res.json({message:"sucess"})
 })
 
-//peichart
-rt.post("/expensesOverveiw",async (req,res)=>{
-        const {email}=req.body;
-        console.log(email,'emmmmm')
-        const us= await schm.auth.findOne({email})
-       if(!us){
-        return res.json({message:" email not found"})
-       }
-       const rdE=await schm.transaction.find({$and:[{userId:us._id},{typename:"Expense"}]}).populate('account1').populate('category').populate('account2');
-       const rdI=await schm.transaction.find({$and:[{userId:us._id},{typename:"Income"}]}).populate('account1').populate('category').populate('account2');
-       console.log(rdE,rdI)
-        res.json({rdE,rdI,message:"sucess"})
-
-})
 //buget
 rt.post("/getTranBg",async (req,res)=>{
         const {em}=req.body;
@@ -307,7 +294,7 @@ rt.post("/getTranBg",async (req,res)=>{
         if(!us){
          return res.json({message:" email not found"})
         }
-        const tn=await schm.transaction.find({userId:us._id}).populate('category');
+        const tn=await schm.transaction.find({userId:us._id}).populate('category').populate('account1').populate('account2');
         console.log(tn)
          res.json({tn,message:"sucess"})
  
@@ -366,5 +353,259 @@ rt.delete("/deleteBudget", async(req,res)=>{
         console.log(us)
         res.json({message:"sucess"})
 })
+rt.put("/putAmInAdd",async(req,res)=>{
+        const {type,accId1,accId2,value} =req.body
+        const a1=await schm.account.findById(accId1)
+        const nvalue = Number(value);
+        console.log(a1,'aaaaaaaaaaaaa')
+        let am1=0;
+        if(type==="Income"){
+           am1=nvalue+a1.amount; 
+           console.log(am1,"ammmmmm")
+        }
+        else if(type==="Expense"){
+           am1=a1.amount-nvalue;
+        }else{
+           const a2=await schm.account.findById(accId2)
+           am1=a1.amount-nvalue
+           const c1= await schm.account.findByIdAndUpdate(accId2,{$set:{amount:(a2.amount+nvalue)}},{new:true})
+           console.log(c1)
+        }
+       
+        const c= await schm.account.findByIdAndUpdate(accId1,{$set:{amount:(am1)}},{new:true})
+      
+        res.json({c,message:"sucess"});
+})
+rt.put("/putAmInEdit",async(req,res)=>{
+        const {id} =req.body
+        const tran=await schm.transaction.findById(id)
+        if(tran){
+                const a1=await schm.account.findById(tran.account1._id)
+                const nvalue = tran.amount;
+                console.log(a1,'aaaaaaaaaaaaa')
+                let am1=0;
+                if(tran.typename==="Income"){
+                   am1=a1.amount-nvalue; 
+                   console.log(am1,"ammmmmm")
+                }
+                else if(tran.typename==="Expense"){
+                   am1=a1.amount+nvalue;
+                }else{
+                   const a2=await schm.account.findById(tran.account2._id)
+                   am1=a1.amount+nvalue
+                   const c1= await schm.account.findByIdAndUpdate(tran.account2._id,{$set:{amount:(a2.amount-nvalue)}},{new:true})
+                   console.log(c1)
+                }
+               
+                const c= await schm.account.findByIdAndUpdate(tran.account1._id,{$set:{amount:(am1)}},{new:true})
+              
+                res.json({c,message:"sucess"});
+        }else{
+                console.log("tran not found")
+        }
+       
+})
+//settings ,profile
+rt.put("/updateProfile",async(req,res)=>{
+        const {em,Name,email,phone}=req.body
+        const us= await schm.auth.findOne({email:em})
+        if(!us){
+                return res.json({message:"Email not  exist"});
+        }
+        const au= await schm.auth.findByIdAndUpdate(us._id,{$set:{username:Name,email:email,phoneno:phone}},{new:true})
+        console.log(au)
+        res.json({au,message:"sucess"});
+})
 
+rt.put("/changePassword",async(req,res)=>{
+        const {email,oldpassword,newpassword}=req.body
+        const us= await schm.auth.findOne({email})
+        console.log(us,"before")
+        if(!us){
+                return res.json({message:"Email not exist"});
+        }
+        const checkpass=await bc.compare(oldpassword,us.password)
+        if(!checkpass){
+                return res.json({message:"Invalid Password"})
+        }
+        const s= await bc.genSalt(10);
+        const h=await bc.hash(newpassword,s)
+        const au= await schm.auth.findByIdAndUpdate(us._id,{$set:{password:h}},{new:true})
+        console.log(au)         
+        
+        res.json({au,message:"Password change successfully"});
+})
+rt.put("/changeCurrency",async(req,res)=>{
+        const {em,currency}=req.body
+        const us= await schm.auth.findOne({email:em})
+       
+        if(!us){
+                return res.json({message:"Email not exist"});
+        }
+
+        const sett= await schm.settings.findOne({userId:us.id});
+        const st= await schm.settings.findByIdAndUpdate(sett._id,{$set:{currency}},{new:true})
+        
+        console.log(st,"settings")
+        res.json({st,message:"successfully"});
+})
+rt.put("/changeMode",async(req,res)=>{
+        const {em,mode}=req.body
+        const us= await schm.auth.findOne({email:em})
+       
+        if(!us){
+                return res.json({message:"Email not exist"});
+        }
+
+        const sett= await schm.settings.findOne({userId:us.id});
+        const st= await schm.settings.findByIdAndUpdate(sett._id,{$set:{mode}},{new:true})
+        
+        console.log(st,"settings")
+        res.json({st,message:"successfully"});
+})
+
+rt.post("/getSettings",async(req,res)=>{
+        const {em}=req.body
+        const us= await schm.auth.findOne({email:em})
+       
+        if(!us){
+                return res.json({message:"Email not exist"});
+        }
+
+        const st= await schm.settings.findOne({userId:us.id});
+        console.log(st,"settings")
+        res.json({st,message:"successfully"});
+})
+
+//reset all
+rt.delete("/reset",async(req,res)=>{
+        try{
+                const {em}=req.body
+                const us= await schm.auth.findOne({email:em})
+               
+                if(!us){
+                        return res.json({message:"Email not exist"});
+                }
+                const userId=us._id
+                await Promise.all([
+                        schm.transaction.deleteMany({ userId }),
+                        schm.buget.deleteMany({ userId }),
+                        schm.account.deleteMany({ userId }),
+                        schm.category.deleteMany({ userId }),
+                        schm.settings.deleteMany({ userId }),
+                      ]);//it delete all parallel*/
+                      
+                console.log("bbbbbbbbbbb")    
+                const email=em    
+               await  insert(email);
+               console.log("iiiiiiiii")
+        
+                res.json({message:"successfully"});
+        }catch(err){
+                console.log(err)
+        }
+        
+})
+rt.delete("/deleteAllRd",async(req,res)=>{
+        try{
+                const {em}=req.body
+                const us= await schm.auth.findOne({email:em})
+                
+               
+                if(!us){
+                        return res.json({message:"Email not exist"});
+                }
+                const userId=us._id
+                const trans=await schm.transaction.find({userId:us._id})
+                if (trans && trans.length > 0) {
+                   for (const tran of trans) {
+                        const a1=await schm.account.findById(tran.account1._id)
+                        const nvalue = tran.amount;
+                        console.log(a1,'aaaaaaaaaaaaa')
+                        let am1=0;
+                        if(tran.typename==="Income"){
+                        am1=a1.amount-nvalue; 
+                        console.log(am1,"ammmmmm")
+                        }
+                        else if(tran.typename==="Expense"){
+                        am1=a1.amount+nvalue;
+                        }else{
+                        const a2=await schm.account.findById(tran.account2._id)
+                        am1=a1.amount+nvalue
+                        const c1= await schm.account.findByIdAndUpdate(tran.account2._id,{$set:{amount:(a2.amount-nvalue)}},{new:true})
+                        console.log(c1)
+                        }
+                
+                        const c= await schm.account.findByIdAndUpdate(tran.account1._id,{$set:{amount:(am1)}},{new:true})
+                        }
+                
+        }
+                await schm.transaction.deleteMany({ userId }),
+        
+                res.json({message:"successfully"});
+        }catch(err){
+                console.log(err)
+        }
+        
+})
+
+//export
+rt.get("/exportpdf",async(req,res)=>{
+        const {em,from,to}=req.query;
+        const us=await schm.auth.findOne({email:em});
+        if(!us){
+              return res.json({mesage:"Not found"})
+        }
+        const start=new Date(from)
+        const end=new Date(to);
+        end.setHours(23,59,59,999)
+       const rd=await schm.transaction.find({$and:[{userId:us._id},{date:{$gte:start,$lte:end}}]}).populate('account1').populate('category').populate('account2');
+       const doc=new pdf()//create memory area
+       res.setHeader('Content-type','application/pdf')
+       res.setHeader('Content-Disposition','attachment; filename=transaction.pdf')//dowload
+       doc.pipe(res)//connect res to doc
+
+      
+       doc.fontSize(16).text('Your Budget Transactions', { align: 'center' ,color:"blue"});
+        doc.moveDown();
+        const tableTop = doc.y + 10;
+        const columnPositions = {
+          date: 90,
+          amount: 160,
+          category: 240,
+          type: 340,
+          note: 450,
+        };
+        
+        // Header
+        doc.font('Helvetica-Bold').fontSize(12);
+        doc.text('Date', columnPositions.date, tableTop);
+        doc.text('Amount', columnPositions.amount, tableTop);
+        doc.text('Category', columnPositions.category, tableTop);
+        doc.text('Type', columnPositions.type, tableTop);
+        doc.text('Note', columnPositions.note, tableTop);
+        doc.moveDown();
+        doc.font('Helvetica');
+        
+        // Rows
+        let rowY = tableTop + 20;
+        rd.forEach((t) => {
+          const date = new Date(t.date).toLocaleDateString();
+          const amount = `₹${t.amount}`;
+          const category = t.category?.name || 'N/A';
+          const type = t.category?.type || 'N/A';
+          const note = t.note || '-';
+        
+          doc.fontSize(11);
+          doc.text(date, columnPositions.date, rowY);
+          doc.text(amount, columnPositions.amount, rowY);
+          doc.text(category, columnPositions.category, rowY);
+          doc.text(type, columnPositions.type, rowY);
+          doc.text(note, columnPositions.note, rowY);
+        
+          rowY += 20;
+        });
+        
+      doc.end()
+})
 module.exports=rt
