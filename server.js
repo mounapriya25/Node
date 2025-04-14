@@ -6,8 +6,8 @@ const passport=require("passport");
 const session=require("express-session");
 const google=require("passport-google-oauth20").Strategy
 const github=require("passport-github2").Strategy
-const route=require("./rout.js")
-const sch=require("./database.js")
+const route=require("./budget_tracker/rout.js")
+const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
 mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
     useNewUrlParser:true,
