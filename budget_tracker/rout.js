@@ -9,6 +9,9 @@ const insert=require("./insert.js")
 const pdf=require('pdfkit')
 
 //sigin
+rt.get("/",(req,res)=>{
+        res.send("welcome to route")
+})
 rt.post("/siginform",async(req,res)=>{
         try{
 
