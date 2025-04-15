@@ -12,10 +12,15 @@ const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
 console.log("✅ Server is starting...");
 
-mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
+/*mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
     useNewUrlParser:true,
     useUnifiedTopology:true
 }).then(() => console.log("MongoDB connected"))
+.catch((err) => console.log("MongoDB connection error:", err));*/
+mg.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(() => console.log("MongoDB connected"))
 .catch((err) => console.log("MongoDB connection error:", err));
 
 //Mouna%40mongo25
