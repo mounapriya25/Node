@@ -15,7 +15,7 @@ rt.post("/siginform",async(req,res)=>{
                 const {username,email,password}=req.body;
                 const user= await schm.auth.findOne({email});
                 if(user){
-                   return res.json({message:"Useremail already exist"})
+                   return res.json({message:"User email already exist"})
                 }
                 const s= await bc.genSalt(10);
                 const h=await bc.hash(password,s)

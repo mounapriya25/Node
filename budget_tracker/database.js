@@ -115,8 +115,8 @@ const account_sch= new mg.Schema({
     name:{
         type:String,
         required:true,
-        trim:true,
-        unique:true
+        trim:true
+
         
     },
     amount:{
@@ -131,7 +131,7 @@ const account_sch= new mg.Schema({
         default:""
     }
 })
-
+account_sch.index({ userId: 1, name: 1 }, { unique: true });
 const account=  mg.model("Account",account_sch);
 
 //category
@@ -143,8 +143,7 @@ const cat_sch= new mg.Schema({
     name:{
         type:String,
         required:true,
-        trim:true,
-        unique:true
+        trim:true
     
     },
    type:{
@@ -158,6 +157,7 @@ const cat_sch= new mg.Schema({
     }
 })
 
+cat_sch.index({ userId: 1, name: 1 }, { unique: true });
 
 
 const category=mg.model("category",cat_sch);

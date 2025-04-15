@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const path=require("path")
 const exp = require("express");
@@ -9,6 +10,8 @@ const github=require("passport-github2").Strategy
 const route=require("./budget_tracker/rout.js")
 const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
+console.log("✅ Server is starting...");
+
 mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
     useNewUrlParser:true,
     useUnifiedTopology:true
@@ -25,7 +28,7 @@ app.use(cors({
 app.use(exp.json())
 
 //icon can acess in react files also
-app.use("/images",exp.static(path.join(__dirname,"img")))
+app.use("/images",exp.static(path.join(__dirname,"budget_tracker/img")))
 
 
 app.use(session({

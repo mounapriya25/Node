@@ -90,7 +90,7 @@
   "start": "node server.js",
   
     
-  "dev": "nodemon budget_tracker/server.js"
+  "dev": "nodemon server.js"
   
   },
   
