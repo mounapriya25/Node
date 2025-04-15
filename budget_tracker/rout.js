@@ -12,6 +12,9 @@ const pdf=require('pdfkit')
 rt.get("/",(req,res)=>{
         res.send("welcome to route")
 })
+rt.get("/api",(req,res)=>{
+        res.send("welcome to route mouna priya")
+})
 rt.post("/siginform",async(req,res)=>{
         try{
 
