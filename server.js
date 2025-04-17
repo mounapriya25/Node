@@ -28,7 +28,8 @@ mg.connect(process.env.MONGODB_URI, {
 const app=exp();
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://your-frontend.vercel.app"],  // Allow your frontend's origin
+    origin: ["http://localhost:3000", "https://budget-reactjs.vercel.app"],  // Allow your frontend's origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,                // Enable sending cookies with credentials
 }));
 app.use(exp.json())
