@@ -7,7 +7,7 @@ const passport=require("passport");
 const session=require("express-session");
 const google=require("passport-google-oauth20").Strategy
 const github=require("passport-github2").Strategy
-const route=require("./api/rout.js")
+const route=require("./budget_tracker/rout.js")
 const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
 console.log("✅ Server is starting...");
