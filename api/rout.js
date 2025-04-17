@@ -2,10 +2,10 @@ require("dotenv").config()
 const exp=require("express")
 const rt=exp.Router()
 const bc=require("bcryptjs")
-const schm=require("./database.js")
+const schm=require("../budget_tracker/database.js")
 const jwt=require("jsonwebtoken")
-const auth=require("./auth.js")
-const insert=require("./insert.js")
+const auth=require("../budget_tracker/auth.js")
+const insert=require("../budget_tracker/insert.js")
 const pdf=require('pdfkit')
 
 //sigin

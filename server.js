@@ -7,7 +7,7 @@ const passport=require("passport");
 const session=require("express-session");
 const google=require("passport-google-oauth20").Strategy
 const github=require("passport-github2").Strategy
-const route=require("./budget_tracker/rout.js")
+const route=require("./api/rout.js")
 const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
 console.log("✅ Server is starting...");
@@ -28,7 +28,7 @@ mg.connect(process.env.MONGODB_URI, {
 const app=exp();
 
 app.use(cors({
-    origin: 'http://localhost:3000',  // Allow your frontend's origin
+    origin: ["http://localhost:3000", "https://your-frontend.vercel.app"],  // Allow your frontend's origin
     credentials: true,                // Enable sending cookies with credentials
 }));
 app.use(exp.json())
@@ -55,7 +55,9 @@ app.use("/",route);
 passport.use(new google({
     clientID:process.env.GOOGLE_ID,
     clientSecret:process.env.GOOGLE_SECRETE,
-    callbackURL:"http://localhost:8000/auth/google/callback"
+    
+    callbackURL: "https://your-backend.vercel.app/auth/google/callback"
+
 
 },async(accessToken,refreshToken,profile,done)=>{
     try{
@@ -73,7 +75,8 @@ passport.use(new google({
 passport.use(new github({
     clientID:process.env.GITHUB_ID,
     clientSecret:process.env.GITHUB_SECRET,
-    callbackURL:"http://localhost:8000/auth/github/callback"
+    callbackURL: "https://your-backend.vercel.app/auth/github/callback"
+
 
 },async(accessToken,refreshToken,profile,done)=>{
     try{
@@ -83,7 +86,7 @@ passport.use(new github({
     }
     return done(null,profile);
 }catch(err){
-    return done(err,null);
+    return done(err,null)
 }
 }))
 
