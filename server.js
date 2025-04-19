@@ -57,7 +57,7 @@ passport.use(new google({
     clientID:process.env.GOOGLE_ID,
     clientSecret:process.env.GOOGLE_SECRETE,
     
-    callbackURL: "https://your-backend.vercel.app/auth/google/callback"
+    callbackURL: "https://node-vnkg.onrender.com/auth/google/callback"
 
 
 },async(accessToken,refreshToken,profile,done)=>{
@@ -76,7 +76,7 @@ passport.use(new google({
 passport.use(new github({
     clientID:process.env.GITHUB_ID,
     clientSecret:process.env.GITHUB_SECRET,
-    callbackURL: "https://your-backend.vercel.app/auth/github/callback"
+    callbackURL: "http://node-vnkg.onrender.com/auth/github/callback"
 
 
 },async(accessToken,refreshToken,profile,done)=>{
