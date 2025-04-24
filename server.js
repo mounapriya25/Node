@@ -18,8 +18,8 @@ console.log("✅ Server is starting...");
 }).then(() => console.log("MongoDB connected"))
 .catch((err) => console.log("MongoDB connection error:", err));*/
 mg.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+   /* useNewUrlParser: true,
+    useUnifiedTopology: true,*/
     serverSelectionTimeoutMS:50000,
   }).then(() => console.log("MongoDB connected"))
 .catch((err) => console.log("MongoDB connection error:", err));
