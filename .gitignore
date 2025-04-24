@@ -1,3 +1,15 @@
 /node_modules
 .env
+.vscode/
+2-books_store/
+api/
+chatapp/
+ejs/
+fake/
+graph/
+imagecloud/
+login/
+mongo-inter/
+Node_In/
+
 
