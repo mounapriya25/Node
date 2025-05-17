@@ -78,6 +78,9 @@ rt.post("/setpass",async(req,res)=>{
        try{
         const {pass}= req.body
         const user= req.session.usrdetails
+        if(!user){
+            return console.log("user not found")
+        }
         console.log(pass,"hlooo")
         console.log(user,"hiiiii")
         const s= await bc.genSalt(10);
