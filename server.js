@@ -114,10 +114,10 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
            email:user.profile.emails[0].value
         }
         console.log("Session User Details Set:", req.session.usrdetails); 
-        return res.redirect("http://localhost:3000/setpasswrd")
+        return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
     }
     
-    res.redirect("http://localhost:3000/home")
+    res.redirect("https://budget-reactjs.vercel.app/home")
     
 })
 
@@ -134,10 +134,10 @@ app.get("/auth/github/callback",passport.authenticate("github",{failureRedirect:
             name:req.user.profile.displayName,
            email:req.user.profile.emails[0].value
         }
-        return res.redirect("http://localhost:3000/setpasswrd")
+        return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
     }  
    console.log("GitHub Authentication Successful. User:", req.user); 
-   res.redirect("http://localhost:3000/home")
+   res.redirect("https://budget-reactjs.vercel.app/home")
 
     
 })
