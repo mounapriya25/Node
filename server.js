@@ -52,10 +52,12 @@ app.use(passport.session())
 
 app.use("/",route);
 
+console.log("GOOGLE_ID:", process.env.GOOGLE_ID);
+console.log("GOOGLE_SECRET:", process.env.GOOGLE_SECRET);
 
 passport.use(new google({
     clientID:process.env.GOOGLE_ID,
-    clientSecret:process.env.GOOGLE_SECRETE,
+    clientSecret:process.env.GOOGLE_SECRET,
     
     callbackURL: "https://node-vnkg.onrender.com/auth/google/callback"
 
@@ -95,12 +97,16 @@ passport.use(new github({
 passport.serializeUser((user,done)=>done(null,user))
 passport.deserializeUser((user,done)=>done(null,user))
 
-app.get("/auth/google",(req,res,next)=>{
-    console.log("google authentication")
-    next()
-},passport.authenticate("google",{scope:["profile","email"]}))
+app.get("/auth/google", (req, res, next) => {
+        console.log("google authentication");
+        next();
+    },
+    passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
 
 app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:"/"}),(req,res)=>{
+    console.log("google authentication")
     const user=req.user
     if(user && user.profile && user.newuser){
         req.session.usrdetails={
