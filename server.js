@@ -10,6 +10,7 @@ const github=require("passport-github2").Strategy
 const route=require("./budget_tracker/rout.js")
 const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
+const cookie=require("cookie-parser")
 console.log("✅ Server is starting...");
 
 /*mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
@@ -33,7 +34,7 @@ app.use(cors({
     credentials: true,                // Enable sending cookies with credentials
 }));
 app.use(exp.json())
-
+app.use(cookie())
 //icon can acess in react files also
 app.use("/images",exp.static(path.join(__dirname,"budget_tracker/img")))
 
@@ -114,12 +115,17 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
            email:user.profile.emails[0].value
         }
         console.log("Session User Details Set:", req.session.usrdetails); 
-        localStorage.setItem("userEmail",req.session.usrdetails.email);
         console.log(req.session.usrdetails.email)
         return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
     }
+    res.cookie("userEmail", req.session.usrdetails?.email || "", {
+        httpOnly: false,
+        secure: true,
+        sameSite: "Lax",
+        maxAge: 24 * 60 * 60 * 1000
+    });
+    res.redirect("https://budget-reactjs.vercel.app/home");
     
-    res.redirect("https://budget-reactjs.vercel.app/home")
     
 })
 
@@ -138,7 +144,12 @@ app.get("/auth/github/callback",passport.authenticate("github",{failureRedirect:
         }
         return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
     }  
-    localStorage.setItem("userEmail",req.session.usrdetails.email);
+    res.cookie("userEmail", req.session.usrdetails?.email || "", {
+        httpOnly: false,
+        secure: true,
+        sameSite: "Lax",
+        maxAge: 24 * 60 * 60 * 1000
+    });
    console.log("GitHub Authentication Successful. User:", req.user); 
    res.redirect("https://budget-reactjs.vercel.app/home")
 
