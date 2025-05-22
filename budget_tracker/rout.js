@@ -79,7 +79,7 @@ rt.post("/setpass",async(req,res)=>{
         console.log("Cookies:", req.cookies);
         console.log("Session:", req.session);
         const {pass}= req.body
-        const user= req.session.usrdetails
+        const user= req.req.cookies.userEmail
         if(!user){
             return console.log("user not found")
         }
