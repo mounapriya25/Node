@@ -79,10 +79,15 @@ rt.post("/setpass",async(req,res)=>{
         console.log("Cookies:", req.cookies);
         console.log("Session:", req.session);
         const {pass}= req.body
-        const user= req.cookies.userEmail
-        if(!user){
-            return console.log("user not found")
+        const userCookie = req.cookies.userEmail;
+
+        if (!userCookie) {
+                console.log("user not found");
+                return;
         }
+
+    // Parse cookie string into an object
+    const user = JSON.parse(userCookie);
         console.log(pass,"hlooo")
         console.log(user,"hiiiii")
         const s= await bc.genSalt(10);
