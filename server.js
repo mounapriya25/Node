@@ -118,31 +118,27 @@ app.get("/auth/google", (req, res, next) => {
 app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:"/"}),(req,res)=>{
     console.log("google AAuthentication1")
     const user=req.user
-    if(user && user.profile && user.newuser){
-        req.session.usrdetails={
-            name:user.profile.displayName,
-           email:user.profile.emails[0].value
-        }
-        res.cookie("userEmail",JSON.stringify(req.session.usrdetails || {}),{
-        httpOnly: false,
-        secure: true,
-        sameSite: "None",
-        maxAge: 24 * 60 * 60 * 1000
+     if (user && user.profile) {
+    const userDetails = {
+      name: user.profile.displayName,
+      email: user.profile.emails[0].value,
+    };
+
+    req.session.usrdetails = userDetails;
+
+    res.cookie("userEmail", JSON.stringify(userDetails), {
+      httpOnly: false,
+      secure: true,
+      sameSite: "None",
+      maxAge: 24 * 60 * 60 * 1000,
     });
-       
-        console.log("Session User Details Set:", req.session.usrdetails); 
-        console.log(req.session.usrdetails.email)
-        console.log("Google AAuthentication2")
-        return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
+
+    if (user.newuser) {
+      return res.redirect("https://budget-reactjs.vercel.app/setpasswrd");
+    } else {
+      return res.redirect("https://budget-reactjs.vercel.app/home");
     }
-    res.cookie("userEmail",user?.profile?.emails?.[0]?.value || "",{
-        httpOnly: false,
-        secure: true,
-        sameSite: "None",
-        maxAge: 24 * 60 * 60 * 1000
-    });
-    console.log("google AAuthentication3")
-    res.redirect("https://budget-reactjs.vercel.app/home");
+  }
     
     
 })
