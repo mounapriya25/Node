@@ -12,6 +12,7 @@ const sch=require("./budget_tracker/database.js")
 const cors=require("cors")
 const cookie=require("cookie-parser")
 console.log("✅ Server is starting...");
+const MongoStore = require("connect-mongo");
 
 /*mg.connect("mongodb+srv://mouna:Mouna%40mongo25@bugetplanner.ibtwc.mongodb.net/",{
     useNewUrlParser:true,
@@ -42,12 +43,15 @@ app.use("/images",exp.static(path.join(__dirname,"budget_tracker/img")))
 app.use(session({
     secret:"MounaBank25",
     resave:false,
-    saveUninitialized :true ,
-    cookie: {
+    saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI // e.g. from MongoDB Atlas
+  }),
+  cookie: {
     httpOnly: true,
-    secure: true,          // true if deployed on HTTPS (like Vercel)
-    sameSite: "None",      // "Lax" for localhost, "None" for cross-origin
-    maxAge: 24 * 60 * 60 * 1000
+    secure: true,
+    sameSite: "None",
+    maxAge: 86400000 // 1 day
   }
 
 }));
