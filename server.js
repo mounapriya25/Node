@@ -123,17 +123,18 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
             name:user.profile.displayName,
            email:user.profile.emails[0].value
         }
-        console.log("Session User Details Set:", req.session.usrdetails); 
-        console.log(req.session.usrdetails.email)
-        console.log("Google AAuthentication2")
-        return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
-    }
-    res.cookie("userEmail", req.session.usrdetails?.email || "", {
+        res.cookie("userEmail", req.session.usrdetails?.email || "", {
         httpOnly: false,
         secure: true,
         sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000
     });
+        console.log("Session User Details Set:", req.session.usrdetails); 
+        console.log(req.session.usrdetails.email)
+        console.log("Google AAuthentication2")
+        return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
+    }
+    
     console.log("google AAuthentication3")
     res.redirect("https://budget-reactjs.vercel.app/home");
     
