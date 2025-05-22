@@ -123,7 +123,7 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
             name:user.profile.displayName,
            email:user.profile.emails[0].value
         }
-        res.cookie("userEmail", req.session.usrdetails?.req.session.usrdetails || "", {
+        res.cookie("userEmail",JSON.stringify(req.session.usrdetails || {}),{
         httpOnly: false,
         secure: true,
         sameSite: "None",
