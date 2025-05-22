@@ -43,7 +43,12 @@ app.use(session({
     secret:"MounaBank25",
     resave:false,
     saveUninitialized :true ,
-    cookie: { secure: false, httpOnly: true }
+    cookie: {
+    httpOnly: true,
+    secure: true,          // true if deployed on HTTPS (like Vercel)
+    sameSite: "None",      // "Lax" for localhost, "None" for cross-origin
+    maxAge: 24 * 60 * 60 * 1000
+  }
 
 }));
 app.use(passport.initialize())
@@ -99,7 +104,7 @@ passport.serializeUser((user,done)=>done(null,user))
 passport.deserializeUser((user,done)=>done(null,user))
 
 app.get("/auth/google", (req, res, next) => {
-        console.log("google authentication");
+        console.log("google authentication0");
         next();
     },
     passport.authenticate("google", { scope: ["profile", "email"] })
@@ -107,7 +112,7 @@ app.get("/auth/google", (req, res, next) => {
 
 
 app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:"/"}),(req,res)=>{
-    console.log("google authentication")
+    console.log("google AAuthentication1")
     const user=req.user
     if(user && user.profile && user.newuser){
         req.session.usrdetails={
@@ -116,6 +121,7 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
         }
         console.log("Session User Details Set:", req.session.usrdetails); 
         console.log(req.session.usrdetails.email)
+        console.log("Google AAuthentication2")
         return res.redirect("https://budget-reactjs.vercel.app/setpasswrd")
     }
     res.cookie("userEmail", req.session.usrdetails?.email || "", {
@@ -124,6 +130,7 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
         sameSite: "Lax",
         maxAge: 24 * 60 * 60 * 1000
     });
+    console.log("google AAuthentication3")
     res.redirect("https://budget-reactjs.vercel.app/home");
     
     
