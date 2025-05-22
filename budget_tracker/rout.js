@@ -76,6 +76,8 @@ rt.post("/loginform",async(req,res)=>{
 rt.post("/setpass",async(req,res)=>{
         
        try{
+        console.log("Cookies:", req.cookies);
+        console.log("Session:", req.session);
         const {pass}= req.body
         const user= req.session.usrdetails
         if(!user){

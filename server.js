@@ -127,7 +127,7 @@ app.get("/auth/google/callback",passport.authenticate("google",{failureRedirect:
     res.cookie("userEmail", req.session.usrdetails?.email || "", {
         httpOnly: false,
         secure: true,
-        sameSite: "Lax",
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000
     });
     console.log("google AAuthentication3")
