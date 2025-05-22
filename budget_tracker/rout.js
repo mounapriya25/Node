@@ -111,6 +111,7 @@ rt.post("/setpass",async(req,res)=>{
 rt.post("/home",auth)
 rt.get("/setemail",(req,res)=>{
         const email=req.cookies.email
+        console.log(email)
         res.json({email})
 })
 
